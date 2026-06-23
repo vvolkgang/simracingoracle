@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Race engineering toolkit: fuel planning and race prep tools for sim racers." />
+  <meta name="theme-color" content="#120c1c" />
+  <title>Fuel Planning — Sim Racing Oracle</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Sidebar hidden for now, so the mobile drawer toggle is disabled too.
+  <input type="checkbox" id="nav-toggle" class="nav-toggle-cb" hidden />
+  -->
+
+  <header class="topbar">
+    <!-- Drawer toggle (re-enable with the sidebar below):
+    <label class="nav-toggle" for="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </label>
+    -->
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">⚙</span>
+      <span class="brand-name">Sim Racing Oracle</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!--
+      Sidebar nav hidden for now (single tool). To re-enable: uncomment this
+      block plus the drawer toggle above. Each tool is its own static page that
+      shares this CSS; add an <li> link per tool and mark the active one.
+
+    <nav class="sidebar" aria-label="Tools">
+      <ul class="nav-list">
+        <li><a class="nav-item active" href="index.html" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">⛽</span><span>Fuel Planning</span></a></li>
+      </ul>
+      <p class="sidebar-footer">Race Engineer Toolkit</p>
+    </nav>
+    <label class="scrim" for="nav-toggle" aria-hidden="true"></label>
+    -->
+
+    <main class="content" id="main">
+      <div class="usecase-root">
+        <header class="uc-header">
+          <h1 class="uc-title">Fuel Planning</h1>
+          <p class="uc-subtitle">Work out how much fuel each session of your event needs.</p>
+        </header>
+
+        <!-- Calculations update live as you type; no submit needed. -->
+        <form id="fuel-form" autocomplete="off">
+
+          <details class="card" open>
+            <summary class="card-summary"><span class="card-title">Race format</span></summary>
+            <div class="card-body">
+              <div class="card-head">
+                <div class="field field-inline">
+                  <label for="preset">Preset</label>
+                  <select id="preset" name="preset"></select>
+                </div>
+              </div>
+              <p class="card-hint">Pick a preset or build your own. Add a row per session, set its limit (minutes or laps) and start type. Preset start types default to standing — adjust per session as needed.</p>
+
+              <div class="session-head" aria-hidden="true">
+                <span>Session</span><span>Limit</span><span>Unit</span><span>Start</span><span></span>
+              </div>
+              <div class="sessions" id="sessions" role="group" aria-label="Sessions"></div>
+
+              <div class="toolbar">
+                <button class="btn btn-primary" id="add-session" type="button">+ Add session</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="card" open>
+            <summary class="card-summary"><span class="card-title">Car &amp; driver</span></summary>
+            <div class="card-body">
+            <div class="card-head">
+              <div class="field field-inline">
+                <label for="car-preset">Preset</label>
+                <select id="car-preset" name="car-preset"></select>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label for="lap-time">Avg lap time (m:ss.mmm)</label>
+                <input id="lap-time" name="lap-time" type="text" inputmode="decimal" value="1:30.000" placeholder="1:30.000" /></div>
+              <div class="field"><label for="fuel-per-lap">Avg fuel per lap (L)</label>
+                <input id="fuel-per-lap" name="fuel-per-lap" type="number" min="0" step="0.01" inputmode="decimal" value="2.6" placeholder="2.6" /></div>
+              <div class="field"><label for="margin-standing">Standing-start margin (extra laps)</label>
+                <input id="margin-standing" name="margin-standing" type="number" min="0" step="0.5" inputmode="decimal" value="2" /></div>
+              <div class="field"><label for="margin-rolling">Rolling-start margin (extra laps)</label>
+                <input id="margin-rolling" name="margin-rolling" type="number" min="0" step="0.5" inputmode="decimal" value="1" /></div>
+            </div>
+            </div>
+          </details>
+        </form>
+
+        <section class="card">
+          <div class="card-head"><h2 class="card-title">Required fuel</h2></div>
+          <p class="empty-state" id="results-empty" hidden>Enter a valid lap time and fuel per lap to calculate.</p>
+          <table class="results-table" id="results-table">
+            <thead>
+              <tr><th>Session</th><th>Start</th><th>Laps</th><th>Fuel</th><th>With margin</th></tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+            <tfoot>
+              <tr class="total-row"><td>Event total</td><td></td><td id="total-laps"></td><td id="total-fuel" class="cell-strong"></td><td id="total-margin" class="cell-margin"></td></tr>
+            </tfoot>
+          </table>
+          <p class="note">Time sessions include the lap in progress when the clock expires (one extra lap in the base figure). <strong>With margin</strong> adds the start-type safety laps on top.</p>
+        </section>
+
+        <footer class="site-footer">
+          <p>Made with 😡 and 💛 by tshorissu_motoring</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- One static row blueprint; JS clones this to add/remove sessions only. -->
+  <template id="session-template">
+    <div class="session-row">
+      <div class="field field-name"><label>Session</label>
+        <input data-k="name" type="text" aria-label="Session name" placeholder="Session name" /></div>
+      <div class="field"><label>Limit</label>
+        <input data-k="limit" type="number" min="0" step="any" inputmode="decimal" aria-label="Session limit" /></div>
+      <div class="field"><label>Unit</label>
+        <select data-k="unit" aria-label="Limit unit"><option value="time">Minutes</option><option value="laps">Laps</option></select></div>
+      <div class="field"><label>Start</label>
+        <select data-k="start" aria-label="Start type"><option value="standing">Standing</option><option value="rolling">Rolling</option><option value="na">N/A</option></select></div>
+      <button type="button" class="btn btn-icon session-remove" aria-label="Remove session">×</button>
+    </div>
+  </template>
+
+  <!-- Pure calculation module (also unit-tested under tests/) -->
+  <script src="assets/js/fuel-calc.js"></script>
+  <!-- Preset data (race formats + cars); edit this file to manage presets. -->
+  <script src="assets/js/presets.js"></script>
+  <!-- Thin DOM glue: manages session rows and writes computed numbers back. -->
+  <script src="assets/js/fuel.js"></script>
+</body>
+</html>

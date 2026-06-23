@@ -24,7 +24,7 @@
         label: "SimRacingPortugal",
         sessions: [
           { name: "Qualifying", unit: "time", limit: 5, start: "na" },
-          { name: "Heat", unit: "time", limit: 15, start: "rolling" },
+          { name: "Heat", unit: "time", limit: 15, start: "standing" },
           { name: "Feature", unit: "time", limit: 20, start: "standing" },
         ],
       },

@@ -153,9 +153,10 @@
 
     populateSelect(formatPresetEl, PRESETS.format);
     populateSelect(carPresetEl, PRESETS.car);
-    // Race format starts on the first preset; car/driver keeps the page defaults.
-    carPresetEl.value = "custom";
+    // A freshly populated select defaults to its first option, so both selectors
+    // start on their first preset.
     applyFormatPreset(formatPresetEl.value);
+    if (PRESETS.car.length) applyCarPreset(carPresetEl.value);
 
     formatPresetEl.addEventListener("change", function () {
       if (formatPresetEl.value !== "custom") applyFormatPreset(formatPresetEl.value);

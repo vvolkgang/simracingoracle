@@ -308,11 +308,27 @@ input::placeholder { color: #6f6291; }
 
   .grid-2 { grid-template-columns: 1fr; }
 
+  /* Preset selector: fill the card width instead of sizing to its longest
+     option (which pushed past the viewport and caused horizontal scroll). */
+  .field-inline { width: 100%; }
+  .field-inline select { flex: 1; width: auto; min-width: 0; }
+
   .session-row { grid-template-columns: 1fr 1fr; }
   .session-row .field-name { grid-column: 1 / -1; }
   .session-remove { grid-column: 1 / -1; justify-self: end; }
 
-  .results-table th, .results-table td { padding: 10px 6px; font-size: 0.9rem; }
+  /* Fixed layout so the Start column stops hogging width. Headers may wrap,
+     but the numeric data cells stay on one line. */
+  .results-table { table-layout: fixed; }
+  .results-table th, .results-table td { padding: 9px 4px; font-size: 0.85rem; }
+  .results-table td { white-space: nowrap; }
+  .results-table td:first-child { white-space: normal; }
+  .results-table col.col-session { width: 30%; }
+  .results-table col.col-start { width: 16%; }
+  .results-table col.col-laps { width: 14%; }
+  .results-table col.col-fuel,
+  .results-table col.col-margin { width: 20%; }
+  .results-table .badge { padding: 2px 6px; font-size: 0.66rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

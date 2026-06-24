@@ -33,12 +33,128 @@
       <div class="usecase-root">
         <header class="uc-header">
           <h1 class="uc-title">Stint Planning</h1>
-          <p class="uc-subtitle">Coming soon — fuel windows, tyre wear and pit strategy.</p>
+          <p class="uc-subtitle">Plan fuel windows and pit stops.</p>
         </header>
 
+        <form id="stint-form" autocomplete="off">
+
+          <details class="card" open>
+            <summary class="card-summary"><span class="card-title">Race &amp; car</span></summary>
+            <div class="card-body">
+              <div class="card-head">
+                <div class="field field-inline">
+                  <label for="stint-preset">Preset</label>
+                  <select id="stint-preset" name="stint-preset"></select>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="field"><label for="race-length">Race length</label>
+                  <input id="race-length" name="race-length" type="text" inputmode="text" value="4h" placeholder="4h, 90m, 1h30m" /></div>
+                <div class="field"><label for="lap-time">Avg lap time (m:ss.sss)</label>
+                  <input id="lap-time" name="lap-time" type="text" inputmode="decimal" value="1:55.000" placeholder="1:55.000" /></div>
+                <div class="field"><label for="fuel-per-lap">Fuel per lap (L)</label>
+                  <input id="fuel-per-lap" name="fuel-per-lap" type="number" min="0" step="0.01" inputmode="decimal" value="3.8" /></div>
+                <div class="field"><label for="tank-size">Tank size (L)</label>
+                  <input id="tank-size" name="tank-size" type="number" min="0" step="0.1" inputmode="decimal" value="100" /></div>
+              </div>
+            </div>
+          </details>
+
+          <details class="card">
+            <summary class="card-summary"><span class="card-title">Pitbox</span></summary>
+            <div class="card-body">
+              <p class="card-hint">Pit stop assumptions and strategy. Set tyre life to <code>0</code> to change tyres at every stop.</p>
+
+              <div class="grid-2">
+                <div class="field"><label for="refuel-strategy">Refuel strategy</label>
+                  <select id="refuel-strategy" name="refuel-strategy"><option value="best">Best strategy</option><option value="balanced">Balanced lap number</option></select></div>
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="fuel-stint-margin">Fuel Stint Margin (laps)</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain fuel stint margin">i</summary>
+                      <p>Extra fuel, in laps, added to every non-final stint. This also drives the recommended start fuel and each non-final refuel target.</p>
+                    </details>
+                  </div>
+                  <input id="fuel-stint-margin" name="fuel-stint-margin" type="number" min="0" step="0.1" inputmode="decimal" value="0.3" />
+                </div>
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="fuel-last-stint-margin">Fuel Last Stint Margin (laps)</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain fuel last stint margin">i</summary>
+                      <p>Extra fuel, in laps, added only to the final stint so you can cover an extra lap if the race runs longer than the estimate.</p>
+                    </details>
+                  </div>
+                  <input id="fuel-last-stint-margin" name="fuel-last-stint-margin" type="number" min="0" step="0.5" inputmode="decimal" value="1" />
+                </div>
+                <div class="field"><label for="refuel-rate">Refuel rate (L/s)</label>
+                  <input id="refuel-rate" name="refuel-rate" type="number" min="0" step="0.1" inputmode="decimal" value="3" /></div>
+                <div class="field"><label for="tyre-life">Tyre life (laps)</label>
+                  <input id="tyre-life" name="tyre-life" type="number" min="0" step="1" inputmode="numeric" value="0" /></div>
+                <div class="field"><label for="tyre-change-time">Tyre change time (s)</label>
+                  <input id="tyre-change-time" name="tyre-change-time" type="number" min="0" step="0.5" inputmode="decimal" value="25" /></div>
+                <div class="field"><label for="driver-change-time">Driver change time (s)</label>
+                  <input id="driver-change-time" name="driver-change-time" type="number" min="0" step="0.5" inputmode="decimal" value="30" /></div>
+                <div class="field field-checkbox">
+                  <label for="concurrent">
+                    <input id="concurrent" name="concurrent" type="checkbox" checked />
+                    <span>Fuel &amp; tyres changed at the same time</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="card" open>
+            <summary class="card-summary"><span class="card-title">Live planning</span></summary>
+            <div class="card-body">
+              <p class="card-hint">Quick calculations for adapting the plan while the race is already running.</p>
+
+              <div class="grid-2">
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="current-fuel-in-tank">Current fuel in tank (L)</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain current fuel in tank">i</summary>
+                      <p>Live value for an early final stop. Enter the fuel currently in the car to calculate how much you need to add for the planned final stint.</p>
+                    </details>
+                  </div>
+                  <input id="current-fuel-in-tank" name="current-fuel-in-tank" type="number" min="0" step="0.1" inputmode="decimal" value="0" />
+                </div>
+              </div>
+
+              <p class="total-fuel-line live-fuel-line" id="last-stint-fuel-line">Last stint fuel to add now: —</p>
+            </div>
+          </details>
+        </form>
+
         <section class="card">
-          <div class="card-head"><h2 class="card-title">Placeholder</h2></div>
-          <p class="card-hint">This page exists to test navigation transitions between tools. The real Stint Planning tool will live here.</p>
+          <div class="card-head"><h2 class="card-title">Plan</h2></div>
+          <p class="empty-state" id="stint-empty" hidden>Fill race length, lap time, fuel/lap and tank size to calculate.</p>
+
+          <div id="stint-results">
+            <div class="kpi-grid">
+              <div class="kpi"><span class="kpi-label">Stints</span><span class="kpi-value" id="kpi-stints">—</span><span class="kpi-sub" id="kpi-stints-sub"></span></div>
+              <div class="kpi"><span class="kpi-label">Estimated laps</span><span class="kpi-value" id="kpi-laps">—</span></div>
+              <div class="kpi"><span class="kpi-label">Start fuel</span><span class="kpi-value" id="kpi-start-fuel">—</span></div>
+              <div class="kpi"><span class="kpi-label">Total pit time</span><span class="kpi-value" id="kpi-pit">—</span><span class="kpi-sub" id="kpi-pit-sub"></span></div>
+            </div>
+            <p class="total-fuel-line" id="total-fuel-line">Total fuel: —</p>
+
+            <table class="results-table stint-table" id="stint-table">
+              <colgroup>
+                <col class="col-session" /><col class="col-laps" /><col class="col-fuel" /><col class="col-fuel" /><col class="col-margin" /><col class="col-start" />
+              </colgroup>
+              <thead>
+                <tr><th>Stint</th><th>Laps</th><th>Fuel at pit</th><th>Refuel</th><th>Pit time</th><th>Tyres</th></tr>
+              </thead>
+              <tbody id="stint-body"></tbody>
+            </table>
+          </div>
+
+          <p class="note">Pit times use refuel rate plus tyre-change and driver-change times. When the "same time" toggle is on, fuel and tyres overlap (the longer of the two counts); driver change is always added separately.</p>
         </section>
 
         <footer class="site-footer">
@@ -57,5 +173,12 @@
       <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
     </a>
   </nav>
+
+  <!-- Pure calculation module (also unit-tested under tests/) -->
+  <script src="assets/js/stint-calc.js"></script>
+  <!-- Preset data (shared with the fuel page) -->
+  <script src="assets/js/presets.js"></script>
+  <!-- Thin DOM glue: reads inputs and writes computed numbers back. -->
+  <script src="assets/js/stint.js"></script>
 </body>
 </html>

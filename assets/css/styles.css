@@ -173,6 +173,47 @@ details[open] > .card-summary::after { transform: rotate(-135deg); }
 /* ---------- Forms ---------- */
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 0.82rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.field-label-row { display: flex; align-items: center; gap: 6px; position: relative; }
+.field-info { position: relative; }
+.field-info summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  list-style: none;
+}
+.field-info summary::-webkit-details-marker { display: none; }
+.field-info summary:hover,
+.field-info[open] summary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.field-info p {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  z-index: 10;
+  width: min(260px, calc(100vw - 48px));
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 0.84rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
 
 input, select {
   width: 100%;
@@ -283,6 +324,41 @@ input::placeholder { color: #6f6291; }
 .site-footer { margin-top: 8px; padding: 8px 0 4px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 .site-footer p { margin: 0; }
 
+/* Checkbox-style field (label + input on one line, label not all-caps). */
+.field-checkbox label {
+  display: flex; align-items: center; gap: 8px;
+  text-transform: none; letter-spacing: 0; font-weight: 500;
+  font-size: 0.95rem; color: var(--text);
+}
+.field-checkbox input[type="checkbox"] {
+  width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--accent); cursor: pointer;
+}
+
+/* KPI grid for headline outputs on Stint Planning. */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.kpi {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.kpi-label { color: var(--text-dim); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+.kpi-value { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi-sub { color: var(--text-dim); font-size: 0.78rem; }
+.total-fuel-line {
+  margin: -6px 0 14px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+.live-fuel-line { margin: 12px 0 0; }
+
 /* ---------- Tab navigation (top on desktop, bottom on mobile) ----------
  * Both variants share .tabbar / .tab; viewport width picks which is shown
  * (see the mobile @media block at the bottom of this file).
@@ -381,11 +457,11 @@ input::placeholder { color: #6f6291; }
   .results-table th, .results-table td { padding: 9px 4px; font-size: 0.85rem; }
   .results-table td { white-space: nowrap; }
   .results-table td:first-child { white-space: normal; }
-  .results-table col.col-session { width: 30%; }
-  .results-table col.col-start { width: 16%; }
-  .results-table col.col-laps { width: 14%; }
+  .results-table col.col-session { width: 24%; }
+  .results-table col.col-start { width: 12%; }
+  .results-table col.col-laps { width: 11%; }
   .results-table col.col-fuel,
-  .results-table col.col-margin { width: 20%; }
+  .results-table col.col-margin { width: 17%; }
   .results-table .badge { padding: 2px 6px; font-size: 0.66rem; }
 }
 

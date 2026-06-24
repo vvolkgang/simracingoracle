@@ -357,6 +357,15 @@ input::placeholder { color: #6f6291; }
   font-size: 0.9rem;
   font-variant-numeric: tabular-nums;
 }
+.live-plan-panel {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.live-plan-title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
 .live-fuel-line { margin: 12px 0 0; }
 
 /* ---------- Tab navigation (top on desktop, bottom on mobile) ----------

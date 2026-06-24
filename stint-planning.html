@@ -107,27 +107,6 @@
             </div>
           </details>
 
-          <details class="card" open>
-            <summary class="card-summary"><span class="card-title">Live planning</span></summary>
-            <div class="card-body">
-              <p class="card-hint">Quick calculations for adapting the plan while the race is already running.</p>
-
-              <div class="grid-2">
-                <div class="field">
-                  <div class="field-label-row">
-                    <label for="current-fuel-in-tank">Current fuel in tank (L)</label>
-                    <details class="field-info">
-                      <summary aria-label="Explain current fuel in tank">i</summary>
-                      <p>Live value for an early final stop. Enter the fuel currently in the car to calculate how much you need to add for the planned final stint.</p>
-                    </details>
-                  </div>
-                  <input id="current-fuel-in-tank" name="current-fuel-in-tank" type="number" min="0" step="0.1" inputmode="decimal" value="0" />
-                </div>
-              </div>
-
-              <p class="total-fuel-line live-fuel-line" id="last-stint-fuel-line">Last stint fuel to add now: —</p>
-            </div>
-          </details>
         </form>
 
         <section class="card">
@@ -152,6 +131,34 @@
               </thead>
               <tbody id="stint-body"></tbody>
             </table>
+
+            <div class="live-plan-panel">
+              <h3 class="live-plan-title">Last Stint Update</h3>
+              <p class="card-hint">Use this if you pit early and need to recalculate the final-stint fuel from the time still remaining.</p>
+              <div class="grid-2">
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="current-fuel-in-tank">Current fuel in tank (L)</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain current fuel in tank">i</summary>
+                      <p>Fuel currently in the car at this stop. The penultimate row uses this as Fuel at pit and calculates the Refuel needed for the final stint.</p>
+                    </details>
+                  </div>
+                  <input id="current-fuel-in-tank" name="current-fuel-in-tank" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Use planned fuel at pit" />
+                </div>
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="remaining-time">Remaining time</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain remaining time">i</summary>
+                      <p>Time left after this stop. Supports values like <code>20m</code>, <code>1h30m</code>, or <code>0:20</code>. Leave blank to use the planned final stint laps from the table.</p>
+                    </details>
+                  </div>
+                  <input id="remaining-time" name="remaining-time" type="text" inputmode="text" placeholder="Use planned final stint" />
+                </div>
+              </div>
+              <p class="total-fuel-line live-fuel-line" id="last-stint-fuel-line">Last stint fuel to add now: —</p>
+            </div>
           </div>
 
           <p class="note">Pit times use refuel rate plus tyre-change and driver-change times. When the "same time" toggle is on, fuel and tyres overlap (the longer of the two counts); driver change is always added separately.</p>

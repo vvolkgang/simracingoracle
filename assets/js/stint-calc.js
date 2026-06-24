@@ -114,7 +114,10 @@
     var tankSize = num(plan.tankSize);
     var fuelStintMargin = Math.max(0, num(plan.fuelStintMargin, 0.3));
     var fuelLastStrintMargin = Math.max(0, num(plan.fuelLastStrintMargin, 0));
-    var currentFuelInTank = Math.max(0, num(plan.currentFuelInTank, 0));
+    var currentFuelInput = num(plan.currentFuelInTank);
+    var hasLiveFinalStintOverride = !isNaN(currentFuelInput);
+    var currentFuelInTank = hasLiveFinalStintOverride ? Math.max(0, currentFuelInput) : 0;
+    var remainingSeconds = parseDuration(plan.remainingTime);
     var refuelStrategy = plan.refuelStrategy === "balanced" ? "balanced" : "best";
     var tyreLife = num(plan.tyreLife, 0);
     var refuelRate = num(plan.refuelRate, 0);
@@ -142,12 +145,15 @@
         totalPitTime: 0,
         refuelRate: refuelRate,
         currentFuelInTank: currentFuelInTank,
+        hasLiveFinalStintOverride: hasLiveFinalStintOverride,
+        lastStintRemainingLaps: 0,
         lastStintStartFuel: 0,
         lastStintFuelRequired: 0,
       };
     }
 
     var estimatedLaps = Math.floor(raceSeconds / lapSeconds) + 1;
+    var liveRemainingLaps = remainingSeconds > 0 ? Math.floor(remainingSeconds / lapSeconds) + 1 : 0;
     var totalFuel = (estimatedLaps + fuelLastStrintMargin) * fuelPerLap;
     var lapsPerStint = Math.max(1, Math.floor(tankSize / fuelPerLap));
     var stintLaps = stintLapsForStrategy(estimatedLaps, lapsPerStint, refuelStrategy);
@@ -200,7 +206,9 @@
       });
     }
 
-    var lastStintStartFuel = stints.length ? stints[stints.length - 1].startFuel : 0;
+    var plannedLastStintLaps = stints.length ? stints[stints.length - 1].laps : 0;
+    var lastStintRemainingLaps = liveRemainingLaps > 0 ? liveRemainingLaps : plannedLastStintLaps;
+    var lastStintStartFuel = Math.min((lastStintRemainingLaps + fuelLastStrintMargin) * fuelPerLap, tankSize);
     var cappedCurrentFuel = Math.min(currentFuelInTank, tankSize);
     var lastStintFuelRequired = Math.max(0, lastStintStartFuel - cappedCurrentFuel);
 
@@ -218,6 +226,8 @@
       totalPitTime: totalPitTime,
       refuelRate: refuelRate,
       currentFuelInTank: cappedCurrentFuel,
+      hasLiveFinalStintOverride: hasLiveFinalStintOverride,
+      lastStintRemainingLaps: lastStintRemainingLaps,
       lastStintStartFuel: lastStintStartFuel,
       lastStintFuelRequired: lastStintFuelRequired,
     };

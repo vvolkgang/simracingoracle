@@ -94,6 +94,7 @@
       fuelStintMargin: num("fuel-stint-margin"),
       fuelLastStrintMargin: num("fuel-last-stint-margin"),
       currentFuelInTank: num("current-fuel-in-tank"),
+      remainingTime: val("remaining-time"),
       tyreLife: num("tyre-life"),
       refuelRate: num("refuel-rate"),
       tyreChangeTime: num("tyre-change-time"),
@@ -119,9 +120,12 @@
     document.getElementById("kpi-laps").textContent = out.estimatedLaps;
     document.getElementById("kpi-start-fuel").textContent = out.stints.length ? fmtL(out.stints[0].startFuel) : "—";
     document.getElementById("total-fuel-line").textContent = "Total fuel: " + fmtL(out.totalFuel);
-    document.getElementById("last-stint-fuel-line").textContent =
-      "Last stint fuel to add now: " + fmtL(out.lastStintFuelRequired) +
-      " (target " + fmtL(out.lastStintStartFuel) + ", current " + fmtL(out.currentFuelInTank) + ")";
+    document.getElementById("last-stint-fuel-line").textContent = out.hasLiveFinalStintOverride
+      ? "Last stint fuel to add now: " + fmtL(out.lastStintFuelRequired) +
+        " (" + out.lastStintRemainingLaps + " laps, target " + fmtL(out.lastStintStartFuel) +
+        ", current " + fmtL(out.currentFuelInTank) + ")"
+      : "Last stint target: " + fmtL(out.lastStintStartFuel) +
+        " (" + out.lastStintRemainingLaps + " laps)";
     document.getElementById("kpi-stints").textContent = out.stintCount;
     document.getElementById("kpi-stints-sub").textContent =
       out.pitStops + " pit stop" + (out.pitStops === 1 ? "" : "s");
@@ -133,8 +137,9 @@
     body.innerHTML = out.stints
       .map(function (s) {
         var pit = s.pit;
-        var fuelAtPit = pit ? fmtL(s.fuelAtPit) : "—";
-        var refuel = pit ? fmtL(pit.refuel) : "—";
+        var isLiveFinalStop = out.hasLiveFinalStintOverride && pit && s.index === out.stintCount - 1;
+        var fuelAtPit = pit ? fmtL(isLiveFinalStop ? out.currentFuelInTank : s.fuelAtPit) : "—";
+        var refuel = pit ? fmtL(isLiveFinalStop ? out.lastStintFuelRequired : pit.refuel) : "—";
         var pitTime = pit ? fmtTime(pit.pitTime) : "—";
         var tyresCell;
         if (!pit) {
@@ -180,6 +185,12 @@
 
     form.addEventListener("input", render);
     form.addEventListener("change", render);
+    ["current-fuel-in-tank", "remaining-time"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("input", render);
+      el.addEventListener("change", render);
+    });
 
     render();
   }

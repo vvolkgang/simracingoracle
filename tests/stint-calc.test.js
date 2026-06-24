@@ -100,13 +100,16 @@ test("computeStintPlan: start fuel mirrors the matching refuel target", () => {
 test("computeStintPlan: last stint fuel required subtracts current fuel in tank", () => {
   const out = StintCalc.computeStintPlan({
     raceLength: "30m", lapTime: "60", fuelPerLap: 2, tankSize: 40,
-    fuelStintMargin: 0, fuelLastStrintMargin: 1, currentFuelInTank: 8,
+    fuelStintMargin: 0, fuelLastStrintMargin: 1, currentFuelInTank: 8, remainingTime: "8m",
     tyreLife: 0, refuelRate: 3,
     fuelAndTyresConcurrent: true, tyreChangeTime: 0, driverChangeTime: 0,
   });
-  // estimatedLaps = 31, stints = 20, 11. Final target is (11 + 1) * 2 = 24L.
-  close(out.lastStintStartFuel, 24);
-  close(out.lastStintFuelRequired, 16);
+  // Live remaining time overrides the planned 11-lap final stint:
+  // floor(8m / 60s) + 1 = 9 laps.
+  // target is (9 + 1) * 2 = 20L.
+  assert.equal(out.lastStintRemainingLaps, 9);
+  close(out.lastStintStartFuel, 20);
+  close(out.lastStintFuelRequired, 12);
 });
 
 test("computeStintPlan: balanced strategy evens stints without adding stops", () => {

@@ -320,6 +320,7 @@ input::placeholder { color: #6f6291; }
 .note code { background: var(--bg); padding: 1px 6px; border-radius: 4px; color: var(--text); }
 
 .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.copy-status { color: var(--text-dim); font-size: 0.82rem; min-width: 48px; }
 
 .site-footer { margin-top: 8px; padding: 8px 0 4px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 .site-footer p { margin: 0; }
@@ -410,8 +411,52 @@ input::placeholder { color: #6f6291; }
 .tab-icon { font-size: 1.05rem; line-height: 1; }
 
 /* Desktop default: top tabs visible, bottom hidden. */
-.tabbar-top { display: flex; margin: 14px auto 0; max-width: max-content; }
+.tool-nav-row {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  margin: 14px auto 0;
+}
+.tabbar-top { display: flex; margin: 0; max-width: max-content; }
 .tabbar-bottom { display: none; }
+.tool-nav-row-bottom { display: none; }
+.share-url-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(27, 20, 48, 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  color: var(--text-dim);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  font-family: inherit;
+}
+.share-url-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.share-url-button:hover,
+.share-url-button:focus-visible {
+  color: var(--accent);
+  border-color: rgba(126, 194, 58, 0.35);
+  outline: none;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
@@ -448,13 +493,23 @@ input::placeholder { color: #6f6291; }
   .session-remove { grid-column: 1 / -1; justify-self: end; }
 
   /* Swap top tabs for floating bottom tabs on mobile. */
-  .tabbar-top { display: none; }
-  .tabbar-bottom {
+  .tool-nav-row-top { display: none; }
+  .tool-nav-row-bottom {
     display: flex;
+    align-items: center;
+    gap: 8px;
     position: fixed;
     bottom: calc(env(safe-area-inset-bottom) + 12px);
     left: 50%;
     transform: translateX(-50%);
+    z-index: 40;
+  }
+  .tabbar-bottom { display: flex; position: static; transform: none; }
+  .tool-nav-row-bottom .copy-status {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 6px);
+    min-width: 0;
   }
   .tab { flex-direction: column; gap: 2px; min-width: 72px; padding: 8px 12px; font-size: 0.72rem; }
   .tab-icon { font-size: 1.25rem; }

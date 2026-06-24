@@ -15,6 +15,12 @@
   var sessionsEl, templateEl, formatPresetEl, carPresetEl;
 
   var START_LABELS = { standing: "Standing", rolling: "Rolling", na: "N/A" };
+  var SHARE_FIELDS = [
+    ["lap", "lap-time"],
+    ["fpl", "fuel-per-lap"],
+    ["ms", "margin-standing"],
+    ["mr", "margin-rolling"],
+  ];
 
   /** Coerce a preset's start value to a known type; empty/null/invalid -> "na". */
   function normalizeStart(value) {
@@ -84,6 +90,62 @@
     if (value == null) return;
     var el = document.getElementById(id);
     if (el) el.value = value;
+  }
+
+  function serializeSessions() {
+    var rows = [];
+    sessionsEl.querySelectorAll(".session-row").forEach(function (row) {
+      rows.push({
+        n: row.querySelector('[data-k="name"]').value,
+        l: row.querySelector('[data-k="limit"]').value,
+        u: row.querySelector('[data-k="unit"]').value,
+        s: row.querySelector('[data-k="start"]').value,
+      });
+    });
+    return JSON.stringify(rows);
+  }
+
+  function applySerializedSessions(value) {
+    var rows;
+    try {
+      rows = JSON.parse(value);
+    } catch (e) {
+      return false;
+    }
+    if (!Array.isArray(rows)) return false;
+    sessionsEl.innerHTML = "";
+    rows.forEach(function (row) {
+      addSession({
+        name: row.n,
+        limit: row.l,
+        unit: row.u,
+        start: row.s,
+      });
+    });
+    if (!sessionsEl.children.length) addSession();
+    return true;
+  }
+
+  function applyQueryParams() {
+    var params = new URLSearchParams(window.location.search);
+    var hasSharedInputs = window.ShareUrl.applyFields(params, SHARE_FIELDS);
+    if (params.has("sessions") && applySerializedSessions(params.get("sessions"))) {
+      hasSharedInputs = true;
+    }
+    if (hasSharedInputs) {
+      formatPresetEl.value = "custom";
+      carPresetEl.value = "custom";
+    }
+  }
+
+  function buildShareUrl() {
+    return window.ShareUrl.buildUrl(SHARE_FIELDS, {
+      sessions: serializeSessions(),
+    });
+  }
+
+  function copyShareUrl() {
+    window.ShareUrl.copyUrl(buildShareUrl(), this.parentNode.querySelector("[data-copy-status]"));
   }
 
   function readPlan() {
@@ -157,6 +219,7 @@
     // start on their first preset.
     applyFormatPreset(formatPresetEl.value);
     if (PRESETS.car.length) applyCarPreset(carPresetEl.value);
+    applyQueryParams();
 
     formatPresetEl.addEventListener("change", function () {
       if (formatPresetEl.value !== "custom") applyFormatPreset(formatPresetEl.value);
@@ -192,6 +255,9 @@
 
     form.addEventListener("input", render);
     form.addEventListener("change", render);
+    document.querySelectorAll("[data-copy-url]").forEach(function (btn) {
+      btn.addEventListener("click", copyShareUrl);
+    });
 
     render();
   }

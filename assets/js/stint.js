@@ -71,6 +71,22 @@
     driverChangeTime: "driver-change-time",
   };
 
+  var SHARE_FIELDS = [
+    ["race", "race-length"],
+    ["lap", "lap-time"],
+    ["fpl", "fuel-per-lap"],
+    ["tank", "tank-size"],
+    ["strat", "refuel-strategy"],
+    ["fsm", "fuel-stint-margin"],
+    ["flsm", "fuel-last-stint-margin"],
+    ["rate", "refuel-rate"],
+    ["tyre", "tyre-life"],
+    ["tyret", "tyre-change-time"],
+    ["driver", "driver-change-time"],
+    ["cur", "current-fuel-in-tank"],
+    ["rem", "remaining-time"],
+  ];
+
   function applyPreset(id) {
     var preset = findPreset(id);
     if (!preset) return;
@@ -82,6 +98,28 @@
     if (preset.fuelAndTyresConcurrent != null) {
       document.getElementById("concurrent").checked = !!preset.fuelAndTyresConcurrent;
     }
+  }
+
+  function applyQueryParams() {
+    var params = new URLSearchParams(window.location.search);
+    var hasSharedInputs = window.ShareUrl.applyFields(params, SHARE_FIELDS);
+
+    if (params.has("conc")) {
+      document.getElementById("concurrent").checked = params.get("conc") === "1";
+      hasSharedInputs = true;
+    }
+
+    if (hasSharedInputs) presetEl.value = "custom";
+  }
+
+  function buildShareUrl() {
+    return window.ShareUrl.buildUrl(SHARE_FIELDS, {
+      conc: checked("concurrent") ? "1" : "0",
+    });
+  }
+
+  function copyShareUrl() {
+    window.ShareUrl.copyUrl(buildShareUrl(), this.parentNode.querySelector("[data-copy-status]"));
   }
 
   function readPlan() {
@@ -169,6 +207,7 @@
 
     populatePresetSelect();
     if (PRESETS.length) applyPreset(presetEl.value);
+    applyQueryParams();
 
     presetEl.addEventListener("change", function () {
       if (presetEl.value !== "custom") applyPreset(presetEl.value);
@@ -190,6 +229,10 @@
       if (!el) return;
       el.addEventListener("input", render);
       el.addEventListener("change", render);
+    });
+
+    document.querySelectorAll("[data-copy-url]").forEach(function (btn) {
+      btn.addEventListener("click", copyShareUrl);
     });
 
     render();

@@ -19,14 +19,23 @@
   </header>
 
   <!-- Top tabs (desktop). -->
-  <nav class="tabbar tabbar-top" aria-label="Tools">
-    <a class="tab" href="index.html" aria-current="page">
-      <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
-    </a>
-    <a class="tab" href="stint-planning.html">
-      <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
-    </a>
-  </nav>
+  <div class="tool-nav-row tool-nav-row-top">
+    <nav class="tabbar tabbar-top" aria-label="Tools">
+      <a class="tab" href="index.html" aria-current="page">
+        <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
+      </a>
+      <a class="tab" href="stint-planning.html">
+        <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
+      </a>
+    </nav>
+    <button class="share-url-button" data-copy-url type="button" aria-label="Copy share URL" title="Copy share URL">
+      <svg class="share-url-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 15V3m0 0 4 4m-4-4L8 7" />
+        <path d="M6 11v8h12v-8" />
+      </svg>
+    </button>
+    <span class="copy-status" data-copy-status aria-live="polite"></span>
+  </div>
 
   <div class="layout">
     <main class="content" id="main">
@@ -125,19 +134,30 @@
   </template>
 
   <!-- Bottom tabs (mobile). -->
-  <nav class="tabbar tabbar-bottom" aria-label="Tools">
-    <a class="tab" href="index.html" aria-current="page">
-      <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
-    </a>
-    <a class="tab" href="stint-planning.html">
-      <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
-    </a>
-  </nav>
+  <div class="tool-nav-row-bottom">
+    <nav class="tabbar tabbar-bottom" aria-label="Tools">
+      <a class="tab" href="index.html" aria-current="page">
+        <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
+      </a>
+      <a class="tab" href="stint-planning.html">
+        <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
+      </a>
+    </nav>
+    <button class="share-url-button" data-copy-url type="button" aria-label="Copy share URL" title="Copy share URL">
+      <svg class="share-url-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 15V3m0 0 4 4m-4-4L8 7" />
+        <path d="M6 11v8h12v-8" />
+      </svg>
+    </button>
+    <span class="copy-status" data-copy-status aria-live="polite"></span>
+  </div>
 
   <!-- Pure calculation module (also unit-tested under tests/) -->
   <script src="assets/js/fuel-calc.js"></script>
   <!-- Preset data (race formats + cars); edit this file to manage presets. -->
   <script src="assets/js/presets.js"></script>
+  <!-- Shared URL copy/import helpers -->
+  <script src="assets/js/share-url.js"></script>
   <!-- Thin DOM glue: manages session rows and writes computed numbers back. -->
   <script src="assets/js/fuel.js"></script>
 </body>

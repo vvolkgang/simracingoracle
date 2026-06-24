@@ -11,38 +11,24 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Sidebar hidden for now, so the mobile drawer toggle is disabled too.
-  <input type="checkbox" id="nav-toggle" class="nav-toggle-cb" hidden />
-  -->
-
   <header class="topbar">
-    <!-- Drawer toggle (re-enable with the sidebar below):
-    <label class="nav-toggle" for="nav-toggle" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
-    </label>
-    -->
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">⚙</span>
       <span class="brand-name">Sim Racing Oracle</span>
     </div>
   </header>
 
+  <!-- Top tabs (desktop). -->
+  <nav class="tabbar tabbar-top" aria-label="Tools">
+    <a class="tab" href="index.html" aria-current="page">
+      <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
+    </a>
+    <a class="tab" href="stint-planning.html">
+      <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
+    </a>
+  </nav>
+
   <div class="layout">
-    <!--
-      Sidebar nav hidden for now (single tool). To re-enable: uncomment this
-      block plus the drawer toggle above. Each tool is its own static page that
-      shares this CSS; add an <li> link per tool and mark the active one.
-
-    <nav class="sidebar" aria-label="Tools">
-      <ul class="nav-list">
-        <li><a class="nav-item active" href="index.html" aria-current="page">
-          <span class="nav-icon" aria-hidden="true">⛽</span><span>Fuel Planning</span></a></li>
-      </ul>
-      <p class="sidebar-footer">Race Engineer Toolkit</p>
-    </nav>
-    <label class="scrim" for="nav-toggle" aria-hidden="true"></label>
-    -->
-
     <main class="content" id="main">
       <div class="usecase-root">
         <header class="uc-header">
@@ -137,6 +123,16 @@
       <button type="button" class="btn btn-icon session-remove" aria-label="Remove session">×</button>
     </div>
   </template>
+
+  <!-- Bottom tabs (mobile). -->
+  <nav class="tabbar tabbar-bottom" aria-label="Tools">
+    <a class="tab" href="index.html" aria-current="page">
+      <span class="tab-icon" aria-hidden="true">⛽</span><span class="tab-label">Fuel</span>
+    </a>
+    <a class="tab" href="stint-planning.html">
+      <span class="tab-icon" aria-hidden="true">⏱</span><span class="tab-label">Stint</span>
+    </a>
+  </nav>
 
   <!-- Pure calculation module (also unit-tested under tests/) -->
   <script src="assets/js/fuel-calc.js"></script>

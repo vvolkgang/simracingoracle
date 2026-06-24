@@ -283,6 +283,51 @@ input::placeholder { color: #6f6291; }
 .site-footer { margin-top: 8px; padding: 8px 0 4px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 .site-footer p { margin: 0; }
 
+/* ---------- Tab navigation (top on desktop, bottom on mobile) ----------
+ * Both variants share .tabbar / .tab; viewport width picks which is shown
+ * (see the mobile @media block at the bottom of this file).
+ * Frosted-glass look via backdrop-filter; gracefully degrades to a flat
+ * translucent panel where unsupported.
+ */
+.tabbar {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(27, 20, 48, 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  z-index: 40;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 64px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.tab:hover { color: var(--text); }
+.tab[aria-current="page"] {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 0 2px 10px rgba(126, 194, 58, 0.4);
+}
+.tab-icon { font-size: 1.05rem; line-height: 1; }
+
+/* Desktop default: top tabs visible, bottom hidden. */
+.tabbar-top { display: flex; margin: 14px auto 0; max-width: max-content; }
+.tabbar-bottom { display: none; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
   .nav-toggle { display: flex; }
@@ -316,6 +361,19 @@ input::placeholder { color: #6f6291; }
   .session-row { grid-template-columns: 1fr 1fr; }
   .session-row .field-name { grid-column: 1 / -1; }
   .session-remove { grid-column: 1 / -1; justify-self: end; }
+
+  /* Swap top tabs for floating bottom tabs on mobile. */
+  .tabbar-top { display: none; }
+  .tabbar-bottom {
+    display: flex;
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .tab { flex-direction: column; gap: 2px; min-width: 72px; padding: 8px 12px; font-size: 0.72rem; }
+  .tab-icon { font-size: 1.25rem; }
+  .content { padding-bottom: calc(env(safe-area-inset-bottom) + 96px); }
 
   /* Fixed layout so the Start column stops hogging width. Headers may wrap,
      but the numeric data cells stay on one line. */

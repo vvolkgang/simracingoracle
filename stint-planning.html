@@ -144,7 +144,7 @@
                       <p>Fuel currently in the car at this stop. The penultimate row uses this as Fuel at pit and calculates the Refuel needed for the final stint.</p>
                     </details>
                   </div>
-                  <input id="current-fuel-in-tank" name="current-fuel-in-tank" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Use planned fuel at pit" />
+                  <input id="current-fuel-in-tank" name="current-fuel-in-tank" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Leave empty to use planned last stint." />
                 </div>
                 <div class="field">
                   <div class="field-label-row">
@@ -154,7 +154,7 @@
                       <p>Time left after this stop. Supports values like <code>20m</code>, <code>1h30m</code>, or <code>0:20</code>. Leave blank to use the planned final stint laps from the table.</p>
                     </details>
                   </div>
-                  <input id="remaining-time" name="remaining-time" type="text" inputmode="text" placeholder="Use planned final stint" />
+                  <input id="remaining-time" name="remaining-time" type="text" inputmode="text" placeholder="Leave empty to use planned last stint." />
                 </div>
               </div>
               <p class="total-fuel-line live-fuel-line" id="last-stint-fuel-line">Last stint fuel to add now: —</p>

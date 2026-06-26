@@ -16,7 +16,7 @@
 
   var START_LABELS = { standing: "Standing", rolling: "Rolling", na: "N/A" };
   var SHARE_FIELDS = [
-    ["lap", "lap-time"],
+    ["lap", "lap-time", function (v) { return window.ShareUrl.formatLapToken(v); }, function (v) { return window.ShareUrl.tokenToClock(v); }],
     ["fpl", "fuel-per-lap"],
     ["ms", "margin-standing"],
     ["mr", "margin-rolling"],
@@ -95,33 +95,47 @@
   function serializeSessions() {
     var rows = [];
     sessionsEl.querySelectorAll(".session-row").forEach(function (row) {
-      rows.push({
-        n: row.querySelector('[data-k="name"]').value,
-        l: row.querySelector('[data-k="limit"]').value,
-        u: row.querySelector('[data-k="unit"]').value,
-        s: row.querySelector('[data-k="start"]').value,
-      });
+      rows.push([
+        row.querySelector('[data-k="name"]').value,
+        row.querySelector('[data-k="limit"]').value,
+        row.querySelector('[data-k="unit"]').value === "laps" ? "l" : "t",
+        row.querySelector('[data-k="start"]').value.charAt(0),
+      ].join("."));
     });
-    return JSON.stringify(rows);
+    return rows.join("_");
   }
 
   function applySerializedSessions(value) {
     var rows;
-    try {
-      rows = JSON.parse(value);
-    } catch (e) {
-      return false;
-    }
-    if (!Array.isArray(rows)) return false;
-    sessionsEl.innerHTML = "";
-    rows.forEach(function (row) {
-      addSession({
-        name: row.n,
-        limit: row.l,
-        unit: row.u,
-        start: row.s,
+    if (value.charAt(0) === "[") {
+      try {
+        rows = JSON.parse(value);
+      } catch (e) {
+        return false;
+      }
+      if (!Array.isArray(rows)) return false;
+      sessionsEl.innerHTML = "";
+      rows.forEach(function (row) {
+        addSession({
+          name: row.n,
+          limit: row.l,
+          unit: row.u,
+          start: row.s,
+        });
       });
-    });
+    } else {
+      rows = value.split("_").filter(Boolean);
+      sessionsEl.innerHTML = "";
+      rows.forEach(function (row) {
+        var parts = row.split(".");
+        addSession({
+          name: parts[0] || "",
+          limit: parts[1] || "",
+          unit: parts[2] === "l" ? "laps" : "time",
+          start: ({ s: "standing", r: "rolling", n: "na" })[parts[3]] || "na",
+        });
+      });
+    }
     if (!sessionsEl.children.length) addSession();
     return true;
   }

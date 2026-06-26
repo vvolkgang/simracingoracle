@@ -73,7 +73,7 @@
 
   var SHARE_FIELDS = [
     ["race", "race-length"],
-    ["lap", "lap-time"],
+    ["lap", "lap-time", function (v) { return window.ShareUrl.formatLapToken(v); }, function (v) { return window.ShareUrl.tokenToClock(v); }],
     ["fpl", "fuel-per-lap"],
     ["tank", "tank-size"],
     ["strat", "refuel-strategy"],

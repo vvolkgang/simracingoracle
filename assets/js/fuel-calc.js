@@ -19,11 +19,26 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  /** Parse "90", "90.5", "1:30", "1:30.5", "1:30.250" -> seconds. NaN if invalid. */
+  /** Parse "90", "90.5", "1:30", "1:30.250", "01m30.250s" -> seconds. NaN if invalid. */
   function parseLapTime(input) {
     if (input == null) return NaN;
-    var str = String(input).trim();
+    var str = String(input).trim().toLowerCase().replace(/\s+/g, "");
     if (!str) return NaN;
+    if (/[hms]/.test(str)) {
+      var total = 0;
+      var matched = 0;
+      var re = /([\d.]+)(h|m|s)/g;
+      var match;
+      while ((match = re.exec(str)) !== null) {
+        var value = Number(match[1]);
+        if (isNaN(value) || value < 0) return NaN;
+        if (match[2] === "h") total += value * 3600;
+        else if (match[2] === "m") total += value * 60;
+        else total += value;
+        matched += match[0].length;
+      }
+      return matched === str.length && total > 0 ? total : NaN;
+    }
     if (str.indexOf(":") === -1) {
       var n = Number(str);
       return n >= 0 ? n : NaN;

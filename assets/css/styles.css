@@ -46,16 +46,17 @@ html, body {
 
 /* ---------- Topbar ---------- */
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  height: var(--topbar-h);
+  width: min(920px, calc(100% - 32px));
+  min-height: var(--topbar-h);
+  margin: 16px auto 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   padding: 0 16px;
   background: var(--bg-elev);
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
 }
 
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0.2px; }
@@ -78,7 +79,7 @@ html, body {
 .nav-toggle span { display: block; height: 2px; background: var(--text); border-radius: 2px; }
 
 /* ---------- Layout ---------- */
-.layout { display: flex; min-height: calc(100vh - var(--topbar-h)); }
+.layout { display: flex; min-height: 0; }
 
 .sidebar {
   width: var(--sidebar-w);

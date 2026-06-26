@@ -58,8 +58,16 @@
               </div>
 
               <div class="grid-2">
-                <div class="field"><label for="race-length">Race length</label>
-                  <input id="race-length" name="race-length" type="text" inputmode="text" value="4h" placeholder="4h, 90m, 1h30m" /></div>
+                <div class="field">
+                  <div class="field-label-row">
+                    <label for="race-length">Race length</label>
+                    <details class="field-info">
+                      <summary aria-label="Explain race length formats">i</summary>
+                      <p>Use time values like <code>4h</code>, <code>90m</code>, <code>1h30m</code>, <code>4:00</code>, or <code>1:30:00</code>. Plain numbers are treated as minutes.</p>
+                    </details>
+                  </div>
+                  <input id="race-length" name="race-length" type="text" inputmode="text" value="4h" placeholder="4h, 90m, 1h30m" />
+                </div>
                 <div class="field"><label for="lap-time">Avg lap time (m:ss.sss)</label>
                   <input id="lap-time" name="lap-time" type="text" inputmode="text" value="1:55.000" placeholder="1:55.000 or 01m55.000s" /></div>
                 <div class="field"><label for="fuel-per-lap">Fuel per lap (L)</label>
